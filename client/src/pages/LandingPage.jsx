@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { gsap } from 'gsap'
 import ThemeToggle from '@/components/ui/ThemeToggle'
+import { Zap, Palette, Search, Bell, Moon } from 'lucide-react'
 
 // Mock post card for the hero illustration
 function MockPostCard() {
@@ -498,11 +499,11 @@ function LandingPage() {
           }}
         >
           {[
-            { icon: '⚡', text: 'Real-time feed' },
-            { icon: '🎨', text: 'Beautiful stories' },
-            { icon: '🔍', text: 'Smart explore' },
-            { icon: '🔔', text: 'Live notifications' },
-            { icon: '🌙', text: 'Dark & light modes' },
+            { icon: <Zap size={16} />, text: 'Real-time feed' },
+            { icon: <Palette size={16} />, text: 'Beautiful stories' },
+            { icon: <Search size={16} />, text: 'Smart explore' },
+            { icon: <Bell size={16} />, text: 'Live notifications' },
+            { icon: <Moon size={16} />, text: 'Dark & light modes' },
           ].map((f) => (
             <div
               key={f.text}
