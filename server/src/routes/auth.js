@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { body } from 'express-validator'
-import { register, login, refresh, logout, me } from '../controllers/authController.js'
+import { register, login, refresh, logout, me, checkUsername } from '../controllers/authController.js'
 import { authenticate } from '../middleware/auth.js'
 import { validateRequest } from '../middleware/validate.js'
 import rateLimit from 'express-rate-limit'
@@ -39,6 +39,7 @@ router.post(
   login
 )
 
+router.get('/check-username', checkUsername)
 router.post('/refresh', refresh)
 router.post('/logout', logout)
 router.get('/me', authenticate, me)

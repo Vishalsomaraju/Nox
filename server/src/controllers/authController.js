@@ -16,10 +16,15 @@ export const register = async (req, res, next) => {
     const { username, email, password, displayName } = req.body
 
     const existing = await prisma.user.findFirst({
-      where: { OR: [{ email }, { username }] },
+      where: { 
+        OR: [
+          { email: email.toLowerCase() }, 
+          { username: username.toLowerCase() }
+        ] 
+      },
     })
     if (existing) {
-      const field = existing.email === email ? 'Email' : 'Username'
+      const field = existing.email.toLowerCase() === email.toLowerCase() ? 'Email' : 'Username'
       return res.status(409).json({ success: false, error: `${field} already taken` })
     }
 
@@ -41,6 +46,27 @@ export const register = async (req, res, next) => {
 
     res.cookie('refreshToken', refreshTokenValue, COOKIE_OPTIONS)
     return res.status(201).json({ success: true, data: { user: safeUser(user), accessToken } })
+  } catch (err) {
+    next(err)
+  }
+}
+
+export const checkUsername = async (req, res, next) => {
+  try {
+    const { username } = req.query
+    if (!username) {
+      return res.status(400).json({ success: false, error: 'Username is required' })
+    }
+    
+    const existing = await prisma.user.findUnique({
+      where: { username: username.toLowerCase() }
+    })
+    
+    if (existing) {
+      return res.status(409).json({ success: false, error: 'Username taken' })
+    }
+    
+    return res.json({ success: true, data: 'Username available' })
   } catch (err) {
     next(err)
   }
