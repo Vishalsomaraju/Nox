@@ -39,7 +39,13 @@ app.use(helmet({
 }))
 app.use(hpp())
 app.use(cors({
-  origin: process.env.CLIENT_URL,
+  origin: (origin, callback) => {
+    if (!origin || origin.includes('localhost') || origin.includes('nox-socialmedia.vercel.app')) {
+      callback(null, true)
+    } else {
+      callback(null, process.env.CLIENT_URL)
+    }
+  },
   credentials: true,
 }))
 
