@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { api } from '@/services/api'
+import { api, getApiErrorMessage, getResponseData } from '@/services/api'
 import useAuthStore from '@/store/authStore'
 import Button from '@/components/ui/Button'
 import ThemeToggle from '@/components/ui/ThemeToggle'
@@ -127,14 +127,15 @@ function RegisterPage() {
         displayName: form.displayName,
         username: form.username.toLowerCase(),
       })
-      setAuth(res.data.user, res.data.accessToken)
+      const { user, accessToken } = getResponseData(res)
+      setAuth(user, accessToken)
       setStep(2)
       setTimeout(() => {
         toast.success('Welcome to NOX! 🎉')
         navigate('/feed')
       }, 1800)
     } catch (err) {
-      const msg = err?.response?.data?.message || 'Registration failed'
+      const msg = getApiErrorMessage(err, 'Registration failed')
       setErrors({ general: msg })
       setStep(1)
     } finally {

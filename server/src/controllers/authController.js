@@ -6,9 +6,14 @@ import { safeUser } from '../utils/helpers.js'
 const REFRESH_TOKEN_MAX_PER_USER = 5
 const COOKIE_OPTIONS = {
   httpOnly: true,
-  sameSite: 'strict',
+  sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
   secure: process.env.NODE_ENV === 'production',
   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+}
+
+const authPayload = (user, accessToken) => {
+  const payload = { user: safeUser(user), accessToken }
+  return { success: true, ...payload, data: payload }
 }
 
 export const register = async (req, res, next) => {
@@ -45,7 +50,7 @@ export const register = async (req, res, next) => {
     })
 
     res.cookie('refreshToken', refreshTokenValue, COOKIE_OPTIONS)
-    return res.status(201).json({ success: true, data: { user: safeUser(user), accessToken } })
+    return res.status(201).json(authPayload(user, accessToken))
   } catch (err) {
     next(err)
   }
@@ -108,7 +113,7 @@ export const login = async (req, res, next) => {
     })
 
     res.cookie('refreshToken', refreshTokenValue, COOKIE_OPTIONS)
-    return res.json({ success: true, data: { user: safeUser(user), accessToken } })
+    return res.json(authPayload(user, accessToken))
   } catch (err) {
     next(err)
   }
@@ -151,7 +156,7 @@ export const refresh = async (req, res, next) => {
     })
 
     res.cookie('refreshToken', newRefreshTokenValue, COOKIE_OPTIONS)
-    return res.json({ success: true, data: { accessToken: newAccessToken } })
+    return res.json({ success: true, accessToken: newAccessToken, data: { accessToken: newAccessToken } })
   } catch (err) {
     next(err)
   }
@@ -179,7 +184,8 @@ export const me = async (req, res, next) => {
       },
     })
     if (!user) return res.status(404).json({ success: false, error: 'User not found' })
-    return res.json({ success: true, data: safeUser(user) })
+    const safe = safeUser(user)
+    return res.json({ success: true, user: safe, data: safe })
   } catch (err) {
     next(err)
   }

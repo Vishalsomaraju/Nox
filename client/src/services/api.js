@@ -4,14 +4,23 @@ import useAuthStore from '@/store/authStore'
 export const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL + '/api',
   withCredentials: true,
+  timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
   },
 })
 
+export const getResponseData = (response) => response?.data?.data ?? response?.data
+
+export const getApiErrorMessage = (error, fallback = 'Something went wrong') =>
+  error?.response?.data?.error || error?.response?.data?.message || fallback
+
 // Request interceptor: attach Authorization header
 api.interceptors.request.use(
   (config) => {
+    if (config.url?.startsWith('/api')) {
+      config.url = config.url.replace(/^\/api(?=\/|$)/, '')
+    }
     const token = useAuthStore.getState().accessToken
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
@@ -42,7 +51,7 @@ api.interceptors.response.use(
     const originalRequest = error.config
 
     // Skip interceptor for login and refresh to prevent deadlock
-    if (originalRequest.url.includes('/auth/login') || originalRequest.url.includes('/auth/refresh')) {
+    if (!originalRequest || originalRequest.url.includes('/auth/login') || originalRequest.url.includes('/auth/refresh')) {
       return Promise.reject(error)
     }
 
@@ -63,7 +72,7 @@ api.interceptors.response.use(
 
       try {
         const res = await api.post('/auth/refresh')
-        const newToken = res.data.accessToken
+        const newToken = getResponseData(res)?.accessToken
         useAuthStore.getState().setAuth(useAuthStore.getState().user, newToken)
         processQueue(null, newToken)
         originalRequest.headers.Authorization = `Bearer ${newToken}`

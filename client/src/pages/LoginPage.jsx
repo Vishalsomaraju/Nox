@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { api } from '@/services/api'
+import { api, getApiErrorMessage, getResponseData } from '@/services/api'
 import useAuthStore from '@/store/authStore'
 import Button from '@/components/ui/Button'
 import ThemeToggle from '@/components/ui/ThemeToggle'
@@ -71,11 +71,12 @@ function LoginPage() {
         email: form.email,
         password: form.password,
       })
-      setAuth(res.data.user, res.data.accessToken)
-      toast.success(`Welcome back, ${res.data.user.displayName || res.data.user.username}!`)
+      const { user, accessToken } = getResponseData(res)
+      setAuth(user, accessToken)
+      toast.success(`Welcome back, ${user.displayName || user.username}!`)
       navigate('/feed')
     } catch (err) {
-      const msg = err?.response?.data?.message || 'Invalid email or password'
+      const msg = getApiErrorMessage(err, 'Invalid email or password')
       setErrors({ general: msg })
     } finally {
       setIsLoading(false)

@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { api } from '@/services/api'
+import { api, getResponseData } from '@/services/api'
 
 const useAuthStore = create((set, get) => ({
   user: null,
@@ -33,18 +33,18 @@ const useAuthStore = create((set, get) => ({
       const res = await api.get('/auth/me', {
         headers: { Authorization: `Bearer ${storedToken}` },
       })
-      set({ user: res.data.user, accessToken: storedToken, isLoading: false })
+      set({ user: getResponseData(res), accessToken: storedToken, isLoading: false })
     } catch (err) {
       if (err?.response?.status === 401) {
         // Try refresh
         try {
           const refreshRes = await api.post('/auth/refresh')
-          const newToken = refreshRes.data.accessToken
+          const newToken = getResponseData(refreshRes)?.accessToken
           localStorage.setItem('nox_token', newToken)
           const meRes = await api.get('/auth/me', {
             headers: { Authorization: `Bearer ${newToken}` },
           })
-          set({ user: meRes.data.user, accessToken: newToken, isLoading: false })
+          set({ user: getResponseData(meRes), accessToken: newToken, isLoading: false })
         } catch {
           set({ user: null, accessToken: null, isLoading: false })
           localStorage.removeItem('nox_token')
