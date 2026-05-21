@@ -47,14 +47,13 @@ function FormInput({ label, type = 'text', value, onChange, placeholder, error, 
 function LoginPage() {
   const navigate = useNavigate()
   const setAuth = useAuthStore((s) => s.setAuth)
-  const [form, setForm] = useState({ email: '', password: '' })
+  const [form, setForm] = useState({ identifier: '', password: '' })
   const [errors, setErrors] = useState({})
   const [isLoading, setIsLoading] = useState(false)
 
   const validate = () => {
     const errs = {}
-    if (!form.email) errs.email = 'Email is required'
-    else if (!/\S+@\S+\.\S+/.test(form.email)) errs.email = 'Enter a valid email'
+    if (!form.identifier) errs.identifier = 'Username or Email is required'
     if (!form.password) errs.password = 'Password is required'
     return errs
   }
@@ -68,7 +67,7 @@ function LoginPage() {
 
     try {
       const res = await api.post('/auth/login', {
-        email: form.email,
+        identifier: form.identifier,
         password: form.password,
       })
       const { user, accessToken } = getResponseData(res)
@@ -76,7 +75,7 @@ function LoginPage() {
       toast.success(`Welcome back, ${user.displayName || user.username}!`)
       navigate('/feed')
     } catch (err) {
-      const msg = getApiErrorMessage(err, 'Invalid email or password')
+      const msg = getApiErrorMessage(err, 'Invalid credentials')
       setErrors({ general: msg })
     } finally {
       setIsLoading(false)
@@ -172,13 +171,13 @@ function LoginPage() {
             )}
 
             <FormInput
-              label="Email"
-              type="email"
-              value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
-              placeholder="you@example.com"
-              error={errors.email}
-              autoComplete="email"
+              label="Email or Username"
+              type="text"
+              value={form.identifier}
+              onChange={(e) => setForm({ ...form, identifier: e.target.value })}
+              placeholder="you@example.com or yourhandle"
+              error={errors.identifier}
+              autoComplete="username"
             />
 
             <FormInput

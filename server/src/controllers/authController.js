@@ -79,16 +79,24 @@ export const checkUsername = async (req, res, next) => {
 
 export const login = async (req, res, next) => {
   try {
-    const { email, password } = req.body
+    const { identifier, password } = req.body
 
-    const user = await prisma.user.findUnique({ where: { email: email.toLowerCase() } })
+    const user = await prisma.user.findFirst({ 
+      where: { 
+        OR: [
+          { email: identifier.toLowerCase() },
+          { username: identifier.toLowerCase() }
+        ]
+      } 
+    })
+    
     if (!user) {
-      return res.status(401).json({ success: false, error: 'Invalid email or password' })
+      return res.status(401).json({ success: false, error: 'Invalid credentials' })
     }
 
     const valid = await bcrypt.compare(password, user.passwordHash)
     if (!valid) {
-      return res.status(401).json({ success: false, error: 'Invalid email or password' })
+      return res.status(401).json({ success: false, error: 'Invalid credentials' })
     }
 
     // Rotate: keep only latest N tokens per user
