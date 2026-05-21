@@ -1,49 +1,49 @@
 ---
-name: NOX Design System
+name: NOX Design System (Modern Minimalist)
 colors:
-  surface: '#09090b'
-  surface-dim: '#09090b'
-  surface-bright: '#27272a'
-  surface-container-lowest: '#000000'
-  surface-container-low: '#18181b'
-  surface-container: '#27272a'
-  surface-container-high: '#3f3f46'
-  surface-container-highest: '#52525b'
-  on-surface: '#fafafa'
-  on-surface-variant: '#a1a1aa'
-  inverse-surface: '#fafafa'
-  inverse-on-surface: '#18181b'
-  outline: '#52525b'
-  outline-variant: '#3f3f46'
-  primary: '#06b6d4'
-  on-primary: '#083344'
-  primary-container: '#0891b2'
-  on-primary-container: '#cffafe'
-  secondary: '#a78bfa'
-  on-secondary: '#2e1065'
-  secondary-container: '#7c3aed'
-  on-secondary-container: '#ede9fe'
+  surface: '#ffffff'
+  surface-dim: '#f8fafc'
+  surface-bright: '#ffffff'
+  surface-container-lowest: '#ffffff'
+  surface-container-low: '#f1f5f9'
+  surface-container: '#e2e8f0'
+  surface-container-high: '#cbd5e1'
+  surface-container-highest: '#94a3b8'
+  on-surface: '#0f172a'
+  on-surface-variant: '#475569'
+  inverse-surface: '#0f172a'
+  inverse-on-surface: '#f8fafc'
+  outline: '#e2e8f0'
+  outline-variant: '#f1f5f9'
+  primary: '#4f46e5'
+  on-primary: '#ffffff'
+  primary-container: '#e0e7ff'
+  on-primary-container: '#312e81'
+  secondary: '#0f172a'
+  on-secondary: '#ffffff'
+  secondary-container: '#f1f5f9'
+  on-secondary-container: '#0f172a'
   error: '#ef4444'
-  on-error: '#450a0a'
-  error-container: '#b91c1c'
-  on-error-container: '#fecaca'
-  background: '#09090b'
-  on-background: '#fafafa'
+  on-error: '#ffffff'
+  error-container: '#fee2e2'
+  on-error-container: '#991b1b'
+  background: '#f8fafc'
+  on-background: '#0f172a'
 typography:
   display-lg:
-    fontFamily: Space Grotesk
+    fontFamily: Inter
     fontSize: 48px
     fontWeight: '700'
     lineHeight: '1.1'
     letterSpacing: -0.02em
   headline-lg:
-    fontFamily: Space Grotesk
+    fontFamily: Inter
     fontSize: 32px
     fontWeight: '600'
     lineHeight: '1.2'
     letterSpacing: -0.01em
   headline-md:
-    fontFamily: Space Grotesk
+    fontFamily: Inter
     fontSize: 24px
     fontWeight: '600'
     lineHeight: '1.3'
@@ -63,11 +63,11 @@ typography:
     fontWeight: '500'
     lineHeight: '1.4'
 rounded:
-  sm: 0.125rem
-  DEFAULT: 0.25rem
-  md: 0.375rem
-  lg: 0.5rem
-  xl: 0.75rem
+  sm: 0.25rem
+  DEFAULT: 0.5rem
+  md: 0.75rem
+  lg: 1rem
+  xl: 1.5rem
   full: 9999px
 spacing:
   unit: 4px
@@ -78,31 +78,31 @@ spacing:
 
 ## Brand & Style
 
-NOX is a modern, premium social media platform. The aesthetic is "Deep Night"—a dark-first, highly structured interface that relies on deep black backgrounds, stark white text, and singular electric accents (Cyan and Violet). The design must feel professional, cutting-edge, and devoid of clutter.
+NOX has transitioned to a **Clean, Modern, and Minimalist** aesthetic. The design prioritizes readability, generous whitespace, and high usability. It feels native, professional, and trustworthy, heavily inspired by premium SaaS tools.
 
 Strictly **NO EMOJIS** are allowed. All iconography must use thin-stroke (1.5px or 2px), professional SVG line icons (e.g., Lucide or Heroicons). 
 
 ## Colors
 
-The core background is Obsidian (#09090b), establishing a void. Panels and cards use slightly elevated greys (#18181b, #27272a). 
-**Cyan (#06b6d4)** is the primary active color, used for primary buttons, active links, and positive actions.
-**Violet (#a78bfa)** is the secondary accent, used for subtle highlights, mentions, or secondary interactions.
+The core background relies on soft whites and extremely faint slates (`#f8fafc`, `#f1f5f9`).
+**Indigo (#4f46e5)** is the primary active color, used for primary buttons, active links, and positive actions.
+**Slate Dark (#0f172a)** is used for high-contrast primary text and secondary buttons.
+
+*(Note: In Dark Mode, the background flips to `#09090b` and `#121212`, keeping the Indigo accent but softening text to `#f8fafc`)*
 
 ## Typography
 
-- **Headings:** Space Grotesk. Tight letter spacing (-0.02em) creates a technical, editorial feel. 
-- **Body & UI Labels:** Inter. Clean, legible, neutral.
+- **All Text:** Inter. A single, highly readable font family creates a cohesive, utilitarian vibe. Headings use tight letter spacing (-0.02em) to appear crisp.
 
 ## Layout & Spacing
 
-- Boundaries are created by negative space and subtle background color shifts (`surface` to `surface-container-low`), NOT by heavy 1px borders. If borders are necessary, they must be extremely faint (`outline-variant` at 20% opacity).
-- Cards should have a generous internal padding (`24px`).
-- Use Glassmorphism (blur) sparingly but effectively, specifically for sticky headers or floating navigation bars, over a 60% opaque `surface` background.
+- Boundaries are created by soft padding and faint, single-pixel borders (`#e2e8f0` in light mode, `#27272a` in dark mode).
+- Cards should have a generous internal padding (`24px`) and a subtle `12px` border radius (`rounded-md`).
+- Shadows are soft and diffused, used only to elevate floating elements like dropdowns, modals, and the mobile bottom navigation bar.
 
 ## Components
 
-- **Buttons:** Primary buttons are solid Cyan with dark text and `rounded-full` (pill shape). Secondary buttons are outlined or ghost buttons.
-- **Avatars:** Perfect circles (`rounded-full`), no borders unless indicating a story ring (which should use a gradient from Cyan to Violet).
+- **Buttons:** Primary buttons are solid Indigo with white text and `rounded-md` (gentle rectangle). Secondary buttons are ghost or softly outlined.
+- **Avatars:** Perfect circles (`rounded-full`). Story rings use a solid Indigo border rather than a loud gradient.
 - **Icons:** Must be minimal line-art. Absolutely no emojis in placeholders or UI elements.
 - **Post Cards:** Clean layouts. User info at the top, content, then a subtle action bar at the bottom with line icons for like, comment, and bookmark.
-
