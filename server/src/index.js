@@ -76,9 +76,22 @@ app.use('/api/stories', storyRoutes)
 app.use('/api/notifications', notificationRoutes)
 app.use('/api/hashtags', hashtagRoutes)
 
-// ─── 404 Handler ──────────────────────────────────────────────────────────────
-app.use((_req, res) => {
+import path from 'path'
+import { fileURLToPath } from 'url'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+// ─── 404 Handler for API routes ──────────────────────────────────────────────────────────────
+app.use('/api', (_req, res) => {
   res.status(404).json({ success: false, error: 'Route not found' })
+})
+
+// ─── Serve Frontend (Static & Catch-All) ──────────────────────────────────────
+app.use(express.static(path.join(__dirname, '../../client/dist')))
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../../client/dist/index.html'))
 })
 
 // ─── Global Error Handler ─────────────────────────────────────────────────────
