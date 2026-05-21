@@ -22,33 +22,42 @@ const useAuthStore = create((set, get) => ({
 
   initialize: async () => {
     const storedToken = localStorage.getItem('nox_token')
+
+    const fetchMe = async (token) => {
+      const res = await api.get('/auth/me', {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      set({ user: getResponseData(res), accessToken: token, isLoading: false })
+    }
+
+    const attemptRefresh = async () => {
+      try {
+        const refreshRes = await api.post('/auth/refresh')
+        const newToken = getResponseData(refreshRes)?.accessToken
+        if (newToken) {
+          localStorage.setItem('nox_token', newToken)
+          await fetchMe(newToken)
+        } else {
+          throw new Error('No token returned')
+        }
+      } catch (err) {
+        set({ user: null, accessToken: null, isLoading: false })
+        localStorage.removeItem('nox_token')
+      }
+    }
+
     if (!storedToken) {
-      set({ isLoading: false })
+      await attemptRefresh()
       return
     }
 
     set({ accessToken: storedToken })
 
     try {
-      const res = await api.get('/auth/me', {
-        headers: { Authorization: `Bearer ${storedToken}` },
-      })
-      set({ user: getResponseData(res), accessToken: storedToken, isLoading: false })
+      await fetchMe(storedToken)
     } catch (err) {
       if (err?.response?.status === 401) {
-        // Try refresh
-        try {
-          const refreshRes = await api.post('/auth/refresh')
-          const newToken = getResponseData(refreshRes)?.accessToken
-          localStorage.setItem('nox_token', newToken)
-          const meRes = await api.get('/auth/me', {
-            headers: { Authorization: `Bearer ${newToken}` },
-          })
-          set({ user: getResponseData(meRes), accessToken: newToken, isLoading: false })
-        } catch {
-          set({ user: null, accessToken: null, isLoading: false })
-          localStorage.removeItem('nox_token')
-        }
+        await attemptRefresh()
       } else {
         set({ user: null, accessToken: null, isLoading: false })
         localStorage.removeItem('nox_token')
